@@ -33,7 +33,7 @@ class Graph(dict):
     def find_path(self, start, end, path=[]):
         """ Find path between two nodes, if exists """
         path = path + [start]
-        if start == end:
+        if start[:2] == end:
             return path
         if not self.has_node(start):
             return None
@@ -45,14 +45,11 @@ class Graph(dict):
 
 def neighbors(x, y, o, grid):
     max_x, max_y = len(grid), len(grid[0])
-    x2, y2 = x+o[0],y+o[1]
     n1 = [(x, y, o2) for o2 in (N,S,W,E) if (o != o2 and (grid[x][y] == '0'))]
-    return n1 + [(x2,y2,o)]  if (-1 < x < max_x and
-         -1 < y < max_y and
-         (x != x2 or y != y2) and
-         (0 <= x2 < max_x) and
-         (0 <= y2 < max_y) and
-         (grid[x2][y2] == '0')) else []
+    return n1 + [(x+o[0]*n,y+o[1]*n,o) for n in range(1,4) if (
+         (0 <= x+o[0]*n < max_x) and
+         (0 <= y+o[1]*n < max_y) and
+         (grid[x+o[0]*n][y+o[1]*n] == '0'))]
 
 def generateGraph(grid):
     graph = Graph()
@@ -72,7 +69,7 @@ def getInstance(data, index):
     x1, y1, x2, y2 = map(int,data[index+M][:4])
     robot_ori = data[index+M][4]
 
-    return [[graph, (x1, y1), (x2, y2), robot_ori]] + getInstance(data, index+N+2)
+    return [[graph, (x1, y1, orientations[robot_ori]), (x2, y2), robot_ori]] + getInstance(data, index+N+2)
 
 def importData(fname):
     with open(fname, 'r') as f:
