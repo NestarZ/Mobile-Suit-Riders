@@ -1,3 +1,6 @@
+N, E, S, W = (1,0), (0,1), (-1,0), (0,-1)
+orientations = {'nord': N, 'est': E, 'sud': S, 'ouest': W}
+
 class Robot:
     pass
 
@@ -40,21 +43,21 @@ class Graph(dict):
                 if newpath: return newpath
         return None
 
-def neighbors(x, y, grid):
+def neighbors(x, y, o, grid):
     max_x, max_y = len(grid), len(grid[0])
-    return [(x2, y2) for x2 in range(x-1, x+2)
-                               for y2 in range(y-1, y+2)
-                               if (-1 < x < max_x and
-                                   -1 < y < max_y and
-                                   (x != x2 or y != y2) and
-                                   (0 <= x2 < max_x) and
-                                   (0 <= y2 < max_y) and
-                                   (grid[x2][y2] == '0'))]
+    x2, y2 = x+o[0],y+o[1]
+    n1 = [(x, y, o2) for o2 in (N,S,W,E) if (o != o2 and (grid[x][y] == '0'))]
+    return n1 + [(x2,y2,o)]  if (-1 < x < max_x and
+         -1 < y < max_y and
+         (x != x2 or y != y2) and
+         (0 <= x2 < max_x) and
+         (0 <= y2 < max_y) and
+         (grid[x2][y2] == '0')) else []
 
 def generateGraph(grid):
     graph = Graph()
-    [graph.add_node((x,y)) for x in range(len(grid)) for y in range(len(grid[0]))]
-    [graph.add_arc((x,y), neighbors(x,y,grid)) if grid[x][y] == '0' else 0 for x in range(len(grid)) for y in range(len(grid[0]))]
+    [graph.add_node((x,y,o)) for x in range(len(grid)) for y in range(len(grid[0])) for o in (N,E,S,W)]
+    [graph.add_arc((x,y,o), neighbors(x,y,o,grid)) if grid[x][y] == '0' else 0 for x in range(len(grid)) for y in range(len(grid[0])) for o in (N,E,S,W)]
     return graph
 
 def getInstance(data, index):
