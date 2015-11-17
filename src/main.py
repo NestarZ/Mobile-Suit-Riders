@@ -101,11 +101,11 @@ def getInstance(data, index):
     if (N, M) == (0, 0):
         return []
 
-    grid = data[index + 1:index + M]
+    grid = data[index + 1:index + N + 1]
     graph = generateGraph(grid)
 
-    x1, y1, x2, y2 = map(int, data[index + M][:4])
-    robot_ori = data[index + M][4]
+    x1, y1, x2, y2 = map(int, data[index + N + 1][:4])
+    robot_ori = data[index + N + 1][4]
 
     return [[graph, (x1, y1, ORIENTATIONS[robot_ori]), (x2, y2)]
             ] + getInstance(data, index + N + 2)
@@ -127,9 +127,15 @@ def format_path(path):
     return "{} {}".format(len(path) - 1, ' '.join(
         [cmd(path[i], path[i + 1]) for i in range(len(path) - 1)]))
 
-r = importData('../data/instances/inputs.dat')
+if __name__  == "__main__":
+    import sys
 
-graph1, start, end = r[0]
-p = graph1.bfs_paths(start, end)
+    if len(sys.argv) > 1 and sys.argv[1] in ("-d", "--demo"):
+        r = importData('../data/instances/inputs_demo.dat')
+    else:
+        r = importData('../data/instances/inputs.dat')
 
-print(format_path(p))
+    for ins in r:
+        graph, start, end = ins
+        p = graph.bfs_paths(start, end)
+        print(format_path(p))
