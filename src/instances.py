@@ -6,10 +6,12 @@ def genInstances(N,M,O):
     assert 0 < M <= 50
 
     grid_info = "{} {}".format(N, M)
+
     obs_indexes = random.sample(range(N*M), O)
     gl = ['1' if k in obs_indexes else '0' for k in range(N*M)]
     g = [gl[M*i:M*(i+1)] for i in range(N)]
     grid = '\n'.join([' '.join(_) for _ in g])
+
     lpos = set([(x,y) for x in range(N) for y in range(M) for i in (x,max(0,x-1)) for j in (y,max(0,y-1)) if g[i][j] == '1'])
     z = list(set((i,j) for i in range(N) for j in range(M)) - lpos)
     robot_pos, goal = random.sample(z, 2)
