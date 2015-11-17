@@ -1,0 +1,14 @@
+#grid {}
+td
+{
+    border: 1px solid #c2c2c2;
+    width: 50px;
+    height: 50px;
+}
+td.obstacle
+{
+  background-color: #9bcdde; }
+td.empty
+{
+  background-color: white;
+}

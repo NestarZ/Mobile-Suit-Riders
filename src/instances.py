@@ -1,31 +1,40 @@
 import random
 from main import ORIENTATIONS
 
-def genInstances(N,M,O):
+def generate_grid(N,M,O):
+    assert 0 < N <= 50
+    assert 0 < M <= 50
+    obs_indexes = random.sample(range(N*M), O)
+    gl = [1 if k in obs_indexes else 0 for k in range(N*M)]
+    return [gl[M*i:M*(i+1)] for i in range(N)]
+
+def generate_robot(grid):
+    N, M = len(grid), len(grid[0])
+    lpos = set([(x,y) for x in range(N) for y in range(M) for i in (x,max(0,x-1)) for j in (y,max(0,y-1)) if grid[i][j] == 1])
+    z = list(set((i,j) for i in range(N) for j in range(M)) - lpos)
+    pos, goal = random.sample(z, 2)
+    orientation = random.sample(ORIENTATIONS.keys(), 1)
+    return pos, goal, orientation
+
+def generate_instances(N,M,O):
     assert 0 < N <= 50
     assert 0 < M <= 50
 
+    g = generate_grid(N,M,O)
     grid_info = "{} {}".format(N, M)
+    grid_str = '\n'.join([' '.join(map(str, _)) for _ in g])
 
-    obs_indexes = random.sample(range(N*M), O)
-    gl = ['1' if k in obs_indexes else '0' for k in range(N*M)]
-    g = [gl[M*i:M*(i+1)] for i in range(N)]
-    grid = '\n'.join([' '.join(_) for _ in g])
+    pos, goal, orientation = generate_robot(g)
+    robot_info = ' '.join(map(str, pos + goal)) + ' ' + orientation[0]
 
-    lpos = set([(x,y) for x in range(N) for y in range(M) for i in (x,max(0,x-1)) for j in (y,max(0,y-1)) if g[i][j] == '1'])
-    z = list(set((i,j) for i in range(N) for j in range(M)) - lpos)
-    robot_pos, goal = random.sample(z, 2)
-    robot_ori = random.sample(ORIENTATIONS.keys(), 1)
-    robot_info = ' '.join(map(str, robot_pos + goal)) + ' ' + robot_ori[0]
+    return "{}\n{}\n{}\n".format(grid_info, grid_str, robot_info)
 
-    return "{}\n{}\n{}\n".format(grid_info, grid, robot_info)
-
-def writeInstances(r, fname):
+def write_instances(r, fname):
     with open('../data/instances/{}.dat'.format(fname), 'w') as f:
         f.write(r + "0 0")
 
 if __name__ == "__main__":
     r = ""
     for _ in range(10):
-        r += genInstances(10,10,10)
-        writeInstances(r, 'inputs')
+        r += generate_instances(10,10,10)
+        write_instances(r, 'inputs')
