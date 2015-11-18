@@ -13,7 +13,7 @@ def generate_robot(grid):
     lpos = set([(x,y) for x in range(N) for y in range(M) for i in (x,max(0,x-1)) for j in (y,max(0,y-1)) if grid[i][j] == 1])
     z = list(set((i,j) for i in range(N) for j in range(M)) - lpos)
     pos, goal = random.sample(z, 2)
-    orientation = random.sample(ORIENTATIONS.keys(), 1)
+    orientation = random.sample(list(ORIENTATIONS.values()), 1)[0]
     return pos, goal, orientation
 
 def generate_instances(N,M,O):
@@ -25,7 +25,8 @@ def generate_instances(N,M,O):
     grid_str = '\n'.join([' '.join(map(str, _)) for _ in g])
 
     pos, goal, orientation = generate_robot(g)
-    robot_info = ' '.join(map(str, pos + goal)) + ' ' + orientation[0]
+    ori_str = [k for k,v in ORIENTATIONS.items() if v == orientation][0]
+    robot_info = ' '.join(map(str, pos + goal)) + ' ' + ori_str
 
     return "{}\n{}\n{}\n".format(grid_info, grid_str, robot_info)
 

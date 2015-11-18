@@ -43,27 +43,27 @@ class Graph(dict):
         while queue:
             (vertex, path) = queue.pop(0)
             for next in self[vertex] - set(path):
-                if next[:2] == goal:
+                if next[0] == goal:
                     return path + [next]
                 else:
                     queue.append((next, path + [next]))
 
 def isNearObstacle(x, y, grid):
     """ Detect if an obstacle is near the cross-road """
-    return any(grid[i][j]=='1' for i in (x,max(0,x-1)) for j in (y,max(0,y-1)))
+    return any(grid[i][j] in ('1', 1) for i in (x,max(0,x-1)) for j in (y,max(0,y-1)))
 
 def neighbors(node, grid):
     """ List all neighbors nodes according to rules """
 
     N, M = len(grid), len(grid[0])
-    x, y, ori = node
+    (x, y), ori = node
 
-    neighblist = [(x, y, ((ori[0]+1) % n, (ori[1]+1) % n)) for n in (-2,2)]
+    neighblist = [((x, y), ((ori[0]+1) % n, (ori[1]+1) % n)) for n in (-2,2)]
 
     for n in range(1, 4):
         x2, y2 = x+ori[0]*n, y+ori[1]*n
         if 0 <= x2 < N and 0 <= y2 < M and not isNearObstacle(x2, y2, grid):
-            neighblist.append((x2, y2, ori))
+            neighblist.append(((x2, y2), ori))
         else:
             break
 
@@ -81,11 +81,11 @@ def generateGraph(grid):
     for x in range(N):
         for y in range(M):
             for o in ORIENTATIONS.values():
-                graph.add_node((x, y, o))
+                graph.add_node(((x, y), o))
 
     # Create arc between all nodes knowing grid and robot workspace rules
     for node in graph.nodes:
-        if grid[node[0]][node[1]] == '0':
+        if grid[node[0][0]][node[0][1]] in ('0', 0):
             nodes = neighbors(node, grid)
             graph.add_arc(node, nodes)
 
@@ -107,7 +107,7 @@ def getInstance(data, index):
     x1, y1, x2, y2 = map(int, data[index + N + 1][:4])
     robot_ori = data[index + N + 1][4]
 
-    return [[graph, (x1, y1, ORIENTATIONS[robot_ori]), (x2, y2)]
+    return [[graph, ((x1, y1), ORIENTATIONS[robot_ori]), (x2, y2)]
             ] + getInstance(data, index + N + 2)
 
 
@@ -122,8 +122,8 @@ def importData(fname):
 def format_path(path):
     """ Format a path for output read """
 
-    cmd = lambda x, y: "a{}".format(abs(x[:2][0] - y[:2][0]) + abs(x[:2][1] - y[:2][1])) if x[
-        :2] != y[:2] else "D" if (x[2][0], x[2][1]) == ((y[2][0] + 1) % 2, (y[2][1] + 1) % 2) else "G"
+    cmd = lambda x, y: "a{}".format(abs(x[0][0] - y[0][0]) + abs(x[0][1] - y[0][1])) if x[
+        0] != y[0] else "D" if (x[1][0], x[1][1]) == ((y[1][0] + 1) % 2, (y[1][1] + 1) % 2) else "G"
     return "{} {}".format(len(path) - 1, ' '.join(
         [cmd(path[i], path[i + 1]) for i in range(len(path) - 1)]))
 

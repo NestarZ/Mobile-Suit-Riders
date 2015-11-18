@@ -11,7 +11,7 @@ def result(request):
                 column_size=request.POST['column_size'],
                 obstacle_amount=request.POST['obstacle_amount'],
                 pub_date=timezone.now())
-    grid.new = "lol"
     grid.generate()
+    grid.solve()
     grid.save()
     return render(request, 'grid_creation/result.html', {'grid': grid})

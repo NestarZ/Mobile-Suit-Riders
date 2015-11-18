@@ -12,3 +12,33 @@ td.empty
 {
   background-color: white;
 }
+
+.cell-info {
+  position:relative;
+  top:-13px;
+  left:-20px;
+  font-weight: bolder;
+  font-family: monospace;
+  font-size: 13px;
+}
+.dot-info {
+  position:relative;
+  top:-20px;
+  left:16px;
+}
+.dot-path {
+  position:relative;
+  top:-4px;
+  left:16px;
+  color:#9bcdde;
+}
+
+.cell-info .text{
+  position:relative;
+  color:#9bcdde;
+  visibility: hidden;
+}
+
+.cell-info:hover .text{
+  visibility: visible;
+}

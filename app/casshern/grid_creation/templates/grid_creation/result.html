@@ -4,23 +4,78 @@
 
 <h2>Your workspace</h2>
 <table id="grid">
-  {% for line in grid.grid %}
+  {% for row in grid.grid %}
       <tr>
-        {% for col in line %}
+        {% for col in row %}
+              {% with i=forloop.parentloop.counter0 j=forloop.counter0%}
               {% if col == 0 %}
               <td class="empty">
-                  {% if grid.robot_pos.0 == forloop.counter0 and grid.robot_pos.1 == forloop.parentloop.counter0%}
-                    R
+                <div class="cell-info">
+                  {% if grid.robot_pos.1 == forloop.counter0 and grid.robot_pos.0 == forloop.parentloop.counter0%}
+                    R <sup>●</sup>
+                    <span class="text">({{ forloop.parentloop.counter0 }},{{ forloop.counter0 }})</span>
+                  {% elif grid.goal.1 == forloop.counter0 and grid.goal.0 == forloop.parentloop.counter0%}
+                    G <sup>●</sup>
+                    <span class="text">({{ forloop.parentloop.counter0 }},{{ forloop.counter0 }})</span>
+                  {% else %}
+
+                        {% for case in grid.path_cases %}
+                            {% if case.0 == i and case.1 == j%}
+                                <sup class="dot-path">●</sup>
+                            {% endif %}
+                        {% endfor %}
+
+                  <span class="text">({{ forloop.parentloop.counter0 }},{{ forloop.counter0 }}) <sup class="dot-info">●</sup></span>
                   {% endif %}
-                  {% if grid.goal.0 == forloop.counter0 and grid.goal.1 == forloop.parentloop.counter0%}
-                    G
-                  {% endif %}
+
+                </div>
               </td>
               {% else %}
               <td class="obstacle"></td>
               {% endif %}
+              {% endwith %}
         {% endfor %}
       </tr>
   {% endfor %}
 </table>
+
+<h3>Grid Information</h3>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Robot
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">
+        Robot position : {{ grid.robot_pos }} <br/>
+        Robot orientation : {{ grid.robot_ori }} <br/>
+        Robot Goal : {{ grid.goal }} <br/>
+        Robot Path : {{ grid.path }}
+        Robot Path (Only Cases) : {{ grid.path_cases }}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwo">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+          Grid
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body">
+        Grid Column Size : {{ grid.column_size }} <br/>
+        Grid Line Size : {{ grid.line_size }} <br/>
+        Grid Obstacles Amount : {{ grid.obstacle_amount }} <br/>
+        Grid List : {{ grid.grid }}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
