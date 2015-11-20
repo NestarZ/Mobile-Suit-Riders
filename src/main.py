@@ -37,18 +37,18 @@ class Graph(dict):
             assert self.has_node(node2), "Node {} undefined".format(node2)
             self[node1].add(node2)
 
-    def bfs_paths(self, start, goal):
+    def bfs_path(self, start, goal):
         """ Find shortest path between two nodes, if exists """
-        print("Ongoing analysis")
         queue = [(start, [start])]
+        visited = []
         while queue:
             (vertex, path) = queue.pop(0)
-            for next in self[vertex] - set(path):
-                if next[0] == goal:
-                    print("Path found!")
-                    return path + [next]
-                else:
-                    queue.append((next, path + [next]))
+            for nextv in (self[vertex] - set(path)) - set(visited):
+                if nextv[0] == goal: # orientation doesnt matter
+                    return path + [nextv]
+                visited.append(nextv)
+                queue.append((nextv, path + [nextv]))
+        return []
 
 def isNearObstacle(x, y, grid):
     """ Detect if an obstacle is near the cross-road """
@@ -98,7 +98,8 @@ def getInstance(data, index):
     """ Get each instance from data by recursive calls (while moving index) """
 
     N, M = map(int, data[index])
-    assert N <= 50 and M <= 50, "Broken rule (N<=50 and M<=50)"
+    #assert 0 < N <= MAX_N
+    #assert 0 < M <= MAX_M
 
     if (N, M) == (0, 0):
         return []
@@ -139,5 +140,5 @@ if __name__  == "__main__":
 
     for ins in r:
         graph, start, end = ins
-        p = graph.bfs_paths(start, end)
+        p = graph.bfs_path(start, end)
         print(format_path(p))

@@ -24,7 +24,7 @@ class Grid(models.Model):
 
     def solve(self):
         graph = main.generateGraph(self.grid)
-        self.path = graph.bfs_paths((self.robot_pos, self.robot_ori), self.goal)
+        self.path = graph.bfs_path((self.robot_pos, self.robot_ori), self.goal)
         self.path_cases = list([x[0] for x in self.path])
         cases = self.path_cases[:]
         self.path_interpolate = []
@@ -32,14 +32,12 @@ class Grid(models.Model):
             for i in range(0, len(cases)-1):
                 if cases[i+1][n] - cases[i][n] > 0:
                     for k in range(cases[i][n], cases[i+1][n]):
-                        print(k,cases[i+1][n], "1")
                         if n == 0:
                             self.path_interpolate.append((k, cases[i][1-n]))
                         else:
                             self.path_interpolate.append((cases[i][1-n], k))
                 else:
                     for k in range(cases[i+1][n], cases[i][n]):
-                        print(k,cases[i][n], "2")
                         if n == 0:
                             self.path_interpolate.append((k, cases[i][1-n]))
                         else:

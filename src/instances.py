@@ -1,9 +1,11 @@
 import random
 from main import ORIENTATIONS
 
+MAX_N, MAX_M = 200, 200
+
 def generate_grid(N,M,O):
-    assert 0 < N <= 50
-    assert 0 < M <= 50
+    assert 0 < N <= MAX_N
+    assert 0 < M <= MAX_M
     obs_indexes = random.sample(range(N*M), O)
     gl = [1 if k in obs_indexes else 0 for k in range(N*M)]
     return [gl[M*i:M*(i+1)] for i in range(N)]
@@ -17,8 +19,8 @@ def generate_robot(grid):
     return pos, goal, orientation
 
 def generate_instances(N,M,O):
-    assert 0 < N <= 50
-    assert 0 < M <= 50
+    assert 0 < N <= MAX_N
+    assert 0 < M <= MAX_M
 
     g = generate_grid(N,M,O)
     grid_info = "{} {}".format(N, M)
