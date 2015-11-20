@@ -7,9 +7,17 @@ def index(request):
     return render(request, 'grid_creation/index.html')
 
 def result(request):
-    grid = Grid(line_size=request.POST['line_size'],
-                column_size=request.POST['column_size'],
-                obstacle_amount=request.POST['obstacle_amount'],
+    if request.method == 'POST' and request.POST.get('line_size', False):
+        N = request.POST['line_size']
+        M = request.POST['column_size']
+        O = request.POST['obstacle_amount']
+    else:
+        N = 10
+        M = 10
+        O = 10
+    grid = Grid(line_size=N,
+                column_size=M,
+                obstacle_amount=O,
                 pub_date=timezone.now())
     grid.generate()
     grid.solve()

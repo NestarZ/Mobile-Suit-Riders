@@ -36,6 +36,6 @@ def write_instances(r, fname):
 
 if __name__ == "__main__":
     r = ""
-    for _ in range(10):
-        r += generate_instances(10,10,10)
+    for _ in range(20):
+        r += generate_instances(20,20,30)
         write_instances(r, 'inputs')

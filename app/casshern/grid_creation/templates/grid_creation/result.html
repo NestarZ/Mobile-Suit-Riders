@@ -25,6 +25,12 @@
                             {% endif %}
                         {% endfor %}
 
+                        {% for case in grid.path_interpolate %}
+                            {% if case.0 == i and case.1 == j%}
+                                <sup class="dot-path">○</sup>
+                            {% endif %}
+                        {% endfor %}
+
                   <span class="text">({{ forloop.parentloop.counter0 }},{{ forloop.counter0 }}) <sup class="dot-info">●</sup></span>
                   {% endif %}
 
@@ -54,8 +60,9 @@
         Robot position : {{ grid.robot_pos }} <br/>
         Robot orientation : {{ grid.robot_ori }} <br/>
         Robot Goal : {{ grid.goal }} <br/>
-        Robot Path : {{ grid.path }}
-        Robot Path (Only Cases) : {{ grid.path_cases }}
+        Robot Path : {{ grid.path }} <br/>
+        Robot Path (Only Cases) : {{ grid.path_cases }} <br/>
+        Robot Path Interpolate (Only Cases) : {{ grid.path_interpolate }}
       </div>
     </div>
   </div>
@@ -78,4 +85,5 @@
     </div>
   </div>
 </div>
+<a href="{% url 'grid_creation:result' %}"><button type="button" class="btn btn-secondary btn-sm">Generate new</button></a>
 {% endblock %}

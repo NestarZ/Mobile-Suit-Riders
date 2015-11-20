@@ -39,11 +39,13 @@ class Graph(dict):
 
     def bfs_paths(self, start, goal):
         """ Find shortest path between two nodes, if exists """
+        print("Ongoing analysis")
         queue = [(start, [start])]
         while queue:
             (vertex, path) = queue.pop(0)
             for next in self[vertex] - set(path):
                 if next[0] == goal:
+                    print("Path found!")
                     return path + [next]
                 else:
                     queue.append((next, path + [next]))
