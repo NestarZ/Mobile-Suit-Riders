@@ -40,15 +40,17 @@ class Graph(dict):
     def bfs_path(self, start, goal):
         """ Find shortest path between two nodes, if exists """
         queue = [(start, [start])]
-        visited = []
+        visited = set([start])
         while queue:
             (vertex, path) = queue.pop(0)
-            for nextv in (self[vertex] - set(path)) - set(visited):
-                if nextv[0] == goal: # orientation doesnt matter
-                    return path + [nextv]
-                visited.append(nextv)
-                queue.append((nextv, path + [nextv]))
+            if vertex[0] == goal: # orientation doesnt matter
+                return path
+            for nextv in self[vertex]:
+                if nextv not in visited:
+                    visited.add(nextv)
+                    queue.append((nextv, path + [nextv]))
         return []
+
 
 def isNearObstacle(x, y, grid):
     """ Detect if an obstacle is near the cross-road """
@@ -131,14 +133,19 @@ def format_path(path):
         [cmd(path[i], path[i + 1]) for i in range(len(path) - 1)]))
 
 if __name__  == "__main__":
-    import sys
+    import sys, time
 
     if len(sys.argv) > 1 and sys.argv[1] in ("-d", "--demo"):
         r = importData('../data/instances/inputs_demo.dat')
     else:
         r = importData('../data/instances/inputs.dat')
 
+    X = []
     for ins in r:
         graph, start, end = ins
+        t = time.time()
         p = graph.bfs_path(start, end)
-        print(format_path(p))
+        end = time.time() - t
+        X.append(end)
+        print(end, format_path(p))
+    print(abs(sum(X)/len(X)), "Temps moyen")

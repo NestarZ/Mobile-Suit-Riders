@@ -1,7 +1,7 @@
 from django.db import models
 
 import sys
-sys.path.insert(0, '/home/nestarz/Github/Mobile-Suit-Riders/src')
+sys.path.insert(0, '/home/nestarz/Github/Robot-Path-Planning/src')
 
 import instances
 import main
