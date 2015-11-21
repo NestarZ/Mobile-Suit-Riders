@@ -1,7 +1,7 @@
 import random
 from main import ORIENTATIONS
 
-MAX_N, MAX_M = 200, 200
+MAX_N, MAX_M = 10e3, 10e3
 
 def generate_grid(N,M,O):
     assert 0 < N <= MAX_N
@@ -33,11 +33,36 @@ def generate_instances(N,M,O):
     return "{}\n{}\n{}\n".format(grid_info, grid_str, robot_info)
 
 def write_instances(r, fname):
-    with open('../data/instances/{}.dat'.format(fname), 'w') as f:
+    with open('../data/inputs/{}.dat'.format(fname), 'w') as f:
         f.write(r + "0 0")
 
 if __name__ == "__main__":
+    import sys, time
+
+    if len(sys.argv) > 1 and len(sys.argv[1]) > 4 and sys.argv[1][-4:] == '.dat':
+        fname = sys.argv[1].split('/')[-1][:-4]
+
+    fname = "instances"
+    S,N,M,O = 20, 20, 20, 20
+    for x in sys.argv:
+        if len(x) > 4 and x[-4:] == '.dat':
+            fname = x.split('/')[-1][:-4]
+        elif '-r=' in x or '--row=' in x:
+            N = int(x.split('=')[-1])
+        elif '-c=' in x or '--col=' in x:
+            M = int(x.split('=')[-1])
+        elif '-o=' in x or '--obstacle=' in x:
+            O = int(x.split('=')[-1])
+        elif '-s=' in x or '--size=' in x:
+            S = int(x.split('=')[-1])
+
     r = ""
-    for _ in range(20):
-        r += generate_instances(50,50,100)
-        write_instances(r, 'inputs')
+    X = []
+    for _ in range(S):
+        t = time.time()
+        r += generate_instances(N,M,O)
+        X.append(time.time() - t)
+        write_instances(r, fname)
+
+    print("{}.dat file created".format(fname))
+    print("{} Creation mean time on {} instances".format(sum(X)/S, S))

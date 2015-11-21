@@ -1,7 +1,7 @@
 ORIENTATIONS = {
-    'nord': (1, 0),
+    'nord': (-1, 0),
     'est': (0, 1),
-    'sud': (-1, 0),
+    'sud': (1, 0),
     'ouest': (0, -1),
     }
 
@@ -92,7 +92,6 @@ def generateGraph(grid):
         if grid[node[0][0]][node[0][1]] in ('0', 0):
             nodes = neighbors(node, grid)
             graph.add_arc(node, nodes)
-
     return graph
 
 
@@ -111,7 +110,6 @@ def getInstance(data, index):
 
     x1, y1, x2, y2 = map(int, data[index + N + 1][:4])
     robot_ori = data[index + N + 1][4]
-
     return [[graph, ((x1, y1), ORIENTATIONS[robot_ori]), (x2, y2)]
             ] + getInstance(data, index + N + 2)
 
@@ -128,24 +126,42 @@ def format_path(path):
     """ Format a path for output read """
 
     cmd = lambda x, y: "a{}".format(abs(x[0][0] - y[0][0]) + abs(x[0][1] - y[0][1])) if x[
-        0] != y[0] else "D" if (x[1][0], x[1][1]) == ((y[1][0] + 1) % 2, (y[1][1] + 1) % 2) else "G"
+        0] != y[0] else "D" if ((x[1][0] + 1) % 2, (x[1][1] + 1) % 2) == (y[1][0], y[1][1]) else "G"
     return "{} {}".format(len(path) - 1, ' '.join(
         [cmd(path[i], path[i + 1]) for i in range(len(path) - 1)]))
+
+def write_result(path, fname):
+    with open(fname, 'w') as f:
+        f.write(path)
 
 if __name__  == "__main__":
     import sys, time
 
+    s = ''
     if len(sys.argv) > 1 and sys.argv[1] in ("-d", "--demo"):
-        r = importData('../data/instances/inputs_demo.dat')
-    else:
-        r = importData('../data/instances/inputs.dat')
+        s = '_demo'
+
+    dirc = "../data/inputs/"
+    fname = "instances{}".format(s)
+    if len(sys.argv[1]) > 4 and sys.argv[1][-4:] == '.dat':
+        fname = sys.argv[1].split('/')[-1][:-4]
+        dirc = sys.argv[1][:-len(fname)-4]
+
+    t = time.time()
+    r = importData('{}{}.dat'.format(dirc, fname))
+    end = time.time() - t
+    print("{} Import mean time on {} instances from inputs{} file".format(end/len(r), len(r), s))
 
     X = []
+    paths_str = ""
     for ins in r:
         graph, start, end = ins
         t = time.time()
         p = graph.bfs_path(start, end)
         end = time.time() - t
         X.append(end)
-        print(end, format_path(p))
-    print(abs(sum(X)/len(X)), "Temps moyen")
+        paths_str += "{}\n".format(format_path(p))
+    print("{} BFS mean time on {} instances from inputs{} file".format(abs(sum(X)/len(X)), len(r), s))
+
+    dirc = "../data/outputs/"
+    write_result(paths_str, '{}{}_output.dat'.format(dirc, fname))

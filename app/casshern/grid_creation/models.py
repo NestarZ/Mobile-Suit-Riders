@@ -1,6 +1,7 @@
 from django.db import models
 
 import sys
+import time
 sys.path.insert(0, '/home/nestarz/Github/Robot-Path-Planning/src')
 
 import instances
@@ -24,7 +25,10 @@ class Grid(models.Model):
 
     def solve(self):
         graph = main.generateGraph(self.grid)
+        t = time.time()
         self.path = graph.bfs_path((self.robot_pos, self.robot_ori), self.goal)
+        end = time.time() - t
+        print("Duration : ", end)
         self.path_cases = list([x[0] for x in self.path])
         cases = self.path_cases[:]
         self.path_interpolate = []
@@ -44,3 +48,4 @@ class Grid(models.Model):
                             self.path_interpolate.append((cases[i][1-n], k))
         self.path_interpolate = list(set(self.path_interpolate) - set(self.path_cases))
         self.path_cases = list(set(self.path_cases))
+        self.path_str = main.format_path(self.path)
