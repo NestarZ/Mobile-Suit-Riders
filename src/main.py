@@ -5,9 +5,6 @@ ORIENTATIONS = {
     'ouest': (0, -1),
     }
 
-class Robot:
-    pass
-
 class Graph(dict):
     """ Data structure for graph inherited from dictionaries """
 
@@ -150,7 +147,7 @@ if __name__  == "__main__":
     t = time.time()
     r = importData('{}{}.dat'.format(dirc, fname))
     end = time.time() - t
-    print("{} Import mean time on {} instances from inputs{} file".format(end/len(r), len(r), s))
+    print("{} Import mean time on {} instances from {}.dat file".format(end/len(r), len(r), fname))
 
     X = []
     paths_str = ""
@@ -161,7 +158,7 @@ if __name__  == "__main__":
         end = time.time() - t
         X.append(end)
         paths_str += "{}\n".format(format_path(p))
-    print("{} BFS mean time on {} instances from inputs{} file".format(abs(sum(X)/len(X)), len(r), s))
+    print("{} BFS mean time on {} instances from {}.dat file".format(abs(sum(X)/len(X)), len(r), fname))
 
     dirc = "../data/outputs/"
     write_result(paths_str, '{}{}_output.dat'.format(dirc, fname))
