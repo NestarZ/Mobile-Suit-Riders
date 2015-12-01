@@ -51,6 +51,24 @@ donc en $O(N+M-\text{O})$ avec :
 
 -   O : le nombre d’obstacles
 
+Durant le parcours du graphe, dès qu'un noeud correspondant à la position d'arrivée est trouvé (quelque soit l'orientation de ce noeud), le chemin qui a été pris est à coup sûr le plus court (le parcours se faisant en largeur). Il y a donc quatres noeuds d'arrivée possibles (une position et quatres orientations).
+
+L'implémentation de l'algorithme s'est fait en Python 3, ce choix est notamment motivé par son orientation objet et la grande flexibilité du langage tout en restant facile à lire et à produire. 
+
+La génération des instances s'effectue avec la commande suivante:
+
+    python3 instances.py N=10 M=10 O=10 S=5 nom_du_fichier
+
+avec N, M, O et S le nombre de ligne, de colonne, d'obstacle et d'instance, puis le nom du fichier (sans extension).
+Le fichier d'entrée est ensuite stocké dans le dossier ../data/inputs/ sous le nom 'nom_du_fichier'.dat.
+
+
+La résolution des instances stockés dans un fichier d'entrée (dans le dossier ../data/inputs/) se fait avec la commande suivante:
+
+    python3 main.py nom_du_fichier
+
+Le fichier résultat est ensuite stocké dans le dossier ../data/outputs/ sous le nom 'nom_du_fichier_output'.dat.
+
 ## Question C
 
 Ici nous avons généré des instances avec $N = M = 10, 20, 30, 40, 50$ avec
@@ -62,8 +80,13 @@ d’exécution. (fig.1, fig.2)
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.4\textwidth]{media/figure_3_n=m_o=0.png}
-\includegraphics[width=0.4\textwidth]{media/figure_3_n=m=o.png}
+\includegraphics[width=0.55\textwidth]{media/figure_3_n=m=o.png}
+\caption{Évaluation du temps de calcul de l’algorithme en fonction de la \bf{taille de la grille} (en secondes)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\textwidth]{media/figure_3_n=m_o=0.png}
 \caption{Évaluation du temps de calcul de l’algorithme en fonction de la \bf{taille de la grille} (en secondes)}
 \end{figure}
 
@@ -89,13 +112,15 @@ temps moyen d’exécution. (fig.3)
 d’obstacles présents} (en secondes)}
 \end{figure}
 
-## Question D
+Nous remarquons ici que pour une taille d'instance fixe, le nombre d'obstacles présents réduit le temps moyen d'éxecution. Cela peut s'expliquer par le fait que le nombre d'obstacle représente aussi le nombre de noeud qui n’ont aucune relation avec d'autres noeuds, ils sont donc orphelins. Ainsi, aucun chemin ne pourra passer par ces noeuds, ils ne sont donc pas à explorer. Le temps d'execution etait lié au parcours des noeuds, il sera donc réduit proportionnellement. De plus lors de la création du graphe, on ne cherchera pas les arcs potentiels de ce noeud, il sera directement ignoré. Le temps de calcul est donc inversement proportionnel et linéaire au nombre d'obstacle.
+
+## Question E
 
 Nous proposons une interface de type web permettant à l’utilisateur de
 choisir la taille de la grille, le nombre d’obstacles et l’affichage de
 la solution obtenue. L’interface utilise le framework opensource Django (fig.4).
 Nous avons ainsi configuré une *webapp* dynamique travaillant de concert
-avec nos algorithmes. (fig.5, fig.6)
+avec nos algorithmes de génération et de résolution du problème. (fig.5, fig.6)
 
 \begin{figure}[H]
 \centering

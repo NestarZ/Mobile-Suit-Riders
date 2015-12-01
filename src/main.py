@@ -140,9 +140,11 @@ if __name__  == "__main__":
 
     dirc = "../data/inputs/"
     fname = "instances{}".format(s)
-    if len(sys.argv) > 1 and len(sys.argv[1]) > 4 and sys.argv[1][-4:] == '.dat':
-        fname = sys.argv[1].split('/')[-1][:-4]
-        dirc = sys.argv[1][:-len(fname)-4]
+    if len(sys.argv) > 1:
+        if len(sys.argv[1]) > 4 and sys.argv[1][-4:] == '.dat':
+            fname = sys.argv[1].split('/')[-1][:-4]
+        else:
+            fname = sys.argv[1].split('/')[-1]
 
     t = time.time()
     r = importData('{}{}.dat'.format(dirc, fname))

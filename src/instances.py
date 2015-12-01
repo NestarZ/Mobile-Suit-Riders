@@ -39,22 +39,22 @@ def write_instances(r, fname):
 if __name__ == "__main__":
     import sys, time
 
-    if len(sys.argv) > 1 and len(sys.argv[1]) > 4 and sys.argv[1][-4:] == '.dat':
-        fname = sys.argv[1].split('/')[-1][:-4]
+    assert len(sys.argv) > 3, "not enough arguments"
 
-    fname = "instances"
-    S,N,M,O = 20, 20, 20, 20
     for x in sys.argv:
-        if len(x) > 4 and x[-4:] == '.dat':
-            fname = x.split('/')[-1][:-4]
-        elif '-r=' in x or '--row=' in x:
+        if 'N=' in x.upper():
             N = int(x.split('=')[-1])
-        elif '-c=' in x or '--col=' in x:
+        if 'M=' in x.upper():
             M = int(x.split('=')[-1])
-        elif '-o=' in x or '--obstacle=' in x:
+        if 'O=' in x.upper():
             O = int(x.split('=')[-1])
-        elif '-s=' in x or '--size=' in x:
+        if 'S=' in x.upper():
             S = int(x.split('=')[-1])
+
+    if not '=' in sys.argv[-1]:
+        fname = x.split('/')[-1]
+    else:
+        fname = "instances{}".format(time.strftime("%d%m%H%M%S"))
 
     r = ""
     X = []
