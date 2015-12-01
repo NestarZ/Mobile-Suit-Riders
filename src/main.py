@@ -42,10 +42,9 @@ class Graph(dict):
             (vertex, path) = queue.pop(0)
             if vertex[0] == goal: # orientation doesnt matter
                 return path
-            for nextv in self[vertex]:
-                if nextv not in visited:
-                    visited.add(nextv)
-                    queue.append((nextv, path + [nextv]))
+            for nextv in self[vertex]-visited:
+                visited.add(nextv)
+                queue.append((nextv, path + [nextv]))
         return []
 
 
@@ -133,6 +132,7 @@ def write_result(path, fname):
 
 if __name__  == "__main__":
     import sys, time
+    import matplotlib.pyplot as plt
 
     s = ''
     if len(sys.argv) > 1 and sys.argv[1] in ("-d", "--demo"):
@@ -140,7 +140,7 @@ if __name__  == "__main__":
 
     dirc = "../data/inputs/"
     fname = "instances{}".format(s)
-    if len(sys.argv[1]) > 4 and sys.argv[1][-4:] == '.dat':
+    if len(sys.argv) > 1 and len(sys.argv[1]) > 4 and sys.argv[1][-4:] == '.dat':
         fname = sys.argv[1].split('/')[-1][:-4]
         dirc = sys.argv[1][:-len(fname)-4]
 
